@@ -362,8 +362,8 @@ begin
 	on GV_DoAnMonHoc.MaLoaiDoAn=DoAnMonHoc.MaLoaiDoAn and MaGiaoVien = @MaGiaoVien 
 	and namHoc = @namHoc and KiHoc = @kiHoc
 
-	--select @taiHDan = sum(GioChuan) from GV_HuongDan join LoaiHuongDan on GV_HuongDan.MaLoaiHuongDan=LoaiHuongDan.MaLoaiHuongDan
-	--and MaGiaoVien = @MaGiaoVien and Datepart(YEAR,GV_HuongDan.NgayBatDau) = @namHoc
+	select @taiHDan = sum(SoLuongHocVien*GioChuan) from GV_HuongDan join LoaiHuongDan on GV_HuongDan.MaLoaiHuongDan = LoaiHuongDan.MaLoaiHuongDan
+	and MaGiaoVien = @MaGiaoVien and dbo.kiemTraNgay(@namHoc, @kiHoc, ngayBatDau)
 
 	if(@taiDHDAMH is null) set @taiDHDAMH = 0
 	if(@taiHDan is null) set @taiHDan = 0
@@ -474,3 +474,16 @@ begin
 end
 go
 select * from tinhTaiGiaoVien('GV01', '2018-2019', '1')
+											     
+create function kiemTraNgay(namHoc int, kiHoc int, ngayBatDau date) returns bit
+as
+begin
+	declare @kq bit = false
+	if kiHoc = 1
+		begin
+			if (datepart(ngayBatDau, 'year') = left(namHoc, 4) and datepart(ngayBatDau, 'month') >= 7) kq = true
+		end
+	else
+		if (datepart(ngayBatDau, 'year') = right(namHoc, 4) and datepart(ngayBatDau, 'month') < 7) kq = true
+	return kq
+end									     
