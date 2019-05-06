@@ -352,24 +352,7 @@ begin
 	return @tongSG	
 end
 
----------------------------------Tải Hướng Dấn----------------------------------------------
-alter function taiHuongDan(@MaGiaoVien varchar(10), @namHoc varchar(10), @kiHoc nvarchar(10)) returns float
-as
-begin
-	declare @taiDHDAMH float, @taiHDan float, @tong float
 
-	select @taiDHDAMH = sum(SoLuongHocVien*GioChuan) from GV_DoAnMonHoc join DoAnMonHoc 
-	on GV_DoAnMonHoc.MaLoaiDoAn=DoAnMonHoc.MaLoaiDoAn and MaGiaoVien = @MaGiaoVien 
-	and namHoc = @namHoc and KiHoc = @kiHoc
-
-	select @taiHDan = sum(SoLuongHocVien*GioChuan) from GV_HuongDan join LoaiHuongDan on GV_HuongDan.MaLoaiHuongDan = LoaiHuongDan.MaLoaiHuongDan
-	and MaGiaoVien = @MaGiaoVien and dbo.kiemTraNgay(@namHoc, @kiHoc, ngayBatDau)
-
-	if(@taiDHDAMH is null) set @taiDHDAMH = 0
-	if(@taiHDan is null) set @taiHDan = 0
-	set @tong = @taiDHDAMH + @taiHDan
-	return @tong
-end
 -------------------------------Tải Nghiên Cứu Khoa Học------------------------------------
 create function taiNCKH(@MaGiaoVien varchar(10), @namHoc varchar(10), @kiHoc nvarchar(10)) returns float
 as
@@ -474,9 +457,11 @@ begin
 end
 go
 select * from tinhTaiGiaoVien('GV01', '2018-2019', '1')
+	
+	
 											     
 ---- Kiểm tra xem ngày thuộc năm học nào, học kì nào ----
-alter function kiemTraNgay(@namHoc varchar(10), @kiHoc varchar(10), @ngayBatDau date) returns bit
+create function kiemTraNgay(@namHoc varchar(10), @kiHoc varchar(10), @ngayBatDau date) returns bit
 as
 begin
 	declare @kq bit = 0
@@ -553,5 +538,5 @@ begin
 	return 
 end
 
-select * from dbo.inCacDoAn('GV01', '2018-2019', '1')
+select * from dbo.inCacDoAn('GV01', '2017-2018', '2')
 									     
