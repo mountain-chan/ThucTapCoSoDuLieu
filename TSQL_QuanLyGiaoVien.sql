@@ -475,15 +475,83 @@ end
 go
 select * from tinhTaiGiaoVien('GV01', '2018-2019', '1')
 											     
-create function kiemTraNgay(namHoc int, kiHoc int, ngayBatDau date) returns bit
+---- Kiểm tra xem ngày thuộc năm học nào, học kì nào ----
+alter function kiemTraNgay(@namHoc varchar(10), @kiHoc varchar(10), @ngayBatDau date) returns bit
 as
 begin
-	declare @kq bit = false
-	if kiHoc = 1
+	declare @kq bit = 0
+	if @kiHoc = '1'
 		begin
-			if (datepart(ngayBatDau, 'year') = left(namHoc, 4) and datepart(ngayBatDau, 'month') >= 7) kq = true
+			if (datepart(YEAR, @ngayBatDau) = left(@namHoc, 4) and datepart(MONTH, @ngayBatDau) >= 7) set @kq = 1
 		end
 	else
-		if (datepart(ngayBatDau, 'year') = right(namHoc, 4) and datepart(ngayBatDau, 'month') < 7) kq = true
-	return kq
-end									     
+		if (datepart(YEAR, @ngayBatDau) = right(@namHoc, 4) and datepart(MONTH, @ngayBatDau) < 7) set @kq = 1
+	return @kq
+end
+---- Tải Khảo Thí ----
+alter function taiKhaoThi(@MaGiaoVien varchar(10), @namHoc varchar(10), @KiHoc nvarchar(10)) returns float
+as
+begin
+	declare @taiChamThi float, @taiChamDA_BTL float, @taiSuaDeThi float, @tongTai float
+
+	select @taiChamThi=Sum(SoHocVien*GioChuan) from GV_ChamThi join LoaiChamThi 
+	on GV_ChamThi.MaLoaiChamThi=LoaiChamThi.MaLoaiChamThi where NamHoc=@namHoc 
+	and MaGiaoVien = @MaGiaoVien and KiHoc = @KiHoc
+
+	select @taiChamDA_BTL=Sum(SoDoAn*GioChuan) from GV_ChamThiDoAnBTL join LoaiChamThiDoAn_BTL 
+	on GV_ChamThiDoAnBTL.MaLoaiChamThi=LoaiChamThiDoAn_BTL.MaLoaiChamThi 
+	where NamHoc=@namHoc and MaGiaoVien = @MaGiaoVien and KiHoc = @KiHoc
+
+	select @taiSuaDeThi=Sum(SoHocPhan*GioChuan) from GV_SuaDoiBoSungNganHangDeThi join SuaDoiBoSungNganHangDeThi 
+	on GV_SuaDoiBoSungNganHangDeThi.MaSuaDoi =SuaDoiBoSungNganHangDeThi.MaSuaDoi where NamHoc=@namHoc 
+	and MaGiaoVien = @MaGiaoVien and KiHoc = @KiHoc
+
+	if(@taiChamThi is null) set @taiChamThi = 0
+	if(@taiChamDA_BTL is null) set @taiChamDA_BTL = 0
+	if(@taiSuaDeThi is null) set @taiSuaDeThi = 0
+
+	set @tongTai = @taiChamThi + @taiChamDA_BTL + @taiSuaDeThi
+	return @tongTai
+end
+go
+
+select dbo.taiKhaoThi('GV01','2018-2019','1')
+
+---- Tải Hướng Dấn ----
+alter function taiHuongDan(@MaGiaoVien varchar(10), @namHoc varchar(10), @kiHoc nvarchar(10)) returns float
+as
+begin
+	declare @taiDHDAMH float, @taiHDan float, @tong float
+
+	select @taiDHDAMH = sum(SoLuongHocVien*GioChuan) from GV_DoAnMonHoc join DoAnMonHoc 
+	on GV_DoAnMonHoc.MaLoaiDoAn=DoAnMonHoc.MaLoaiDoAn and MaGiaoVien = @MaGiaoVien 
+	and namHoc = @namHoc and KiHoc = @kiHoc
+
+	select @taiHDan = sum(GioChuan) from GV_HuongDan join LoaiHuongDan on GV_HuongDan.MaLoaiHuongDan = LoaiHuongDan.MaLoaiHuongDan
+	and MaGiaoVien = @MaGiaoVien and dbo.kiemTraNgay(@namHoc, @kiHoc, ngayBatDau) = 1
+
+	if(@taiDHDAMH is null) set @taiDHDAMH = 0
+	if(@taiHDan is null) set @taiHDan = 0
+	set @tong = @taiDHDAMH + @taiHDan
+	return @tong
+end
+
+select dbo.taiHuongDan('GV01','2018-2019','1')
+
+---- In Các Đồ Án ----
+create function inCacDoAn(@MaGiaoVien varchar(10), @namHoc varchar(10), @kiHoc nvarchar(10)) returns @table table
+(
+	MaHocVien varchar(10),
+	TenHocVien nvarchar(40),
+	TenDeTai nvarchar(50)
+)
+as
+begin
+	insert into @table select HocVien.MaHocVien, TenHocVien, TenDeTai
+	from GV_HuongDan join HocVien on GV_HuongDan.MaHocVien = HocVien.MaHocVien
+	where MaGiaoVien = @MaGiaoVien and dbo.kiemTraNgay(@namHoc, @kiHoc, NgayBatDau) = 1
+	return 
+end
+
+select * from dbo.inCacDoAn('GV01', '2018-2019', '1')
+									     
