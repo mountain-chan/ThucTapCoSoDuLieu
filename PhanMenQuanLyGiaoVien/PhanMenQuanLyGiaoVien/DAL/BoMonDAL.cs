@@ -18,8 +18,13 @@ namespace PhanMenQuanLyGiaoVien.DAL
             data = Server.LayDuLieuBang(str);
             foreach(DataRow item in data.Rows)
             {
-                bm = new BoMon(item["MaBoMon"].ToString(), item["TenBM"].ToString(), item["MaKhoa"].ToString(),
-                    item["MaChuNhiem"].ToString());
+                bm = new BoMon
+                {
+                    MaBoMon = item["MaBoMon"].ToString(),
+                    TenBoMon = item["TenBM"].ToString(),
+                    MaKhoa = item["MaKhoa"].ToString(),
+                    MaChuNhiem = item["MaChuNhiem"].ToString()
+                };
 
                 listBM.Add(bm);
             }
@@ -34,26 +39,65 @@ namespace PhanMenQuanLyGiaoVien.DAL
             data = Server.LayDuLieuBang(str);
             foreach (DataRow item in data.Rows)
             {
-                bm = new BoMon(item["MaBoMon"].ToString(), item["TenBM"].ToString(),
-                    item["MaKhoa"].ToString(),
-                    item["MaChuNhiem"].ToString());
+                bm = new BoMon
+                {
+                    MaBoMon = item["MaBoMon"].ToString(),
+                    TenBoMon = item["TenBM"].ToString(),
+                    MaKhoa = item["MaKhoa"].ToString(),
+                    MaChuNhiem = item["MaChuNhiem"].ToString()
+                };
 
                 listBM.Add(bm);
             }
             return listBM;
         }
 
-        public BoMon LayBoMonTheoMa(string maBM)
+        public BoMon LayBoMonTheoGiaoVien(string maGV)
         {
+            List<BoMon> listBM = new List<BoMon>();
             data = new DataTable();
-            string str = "select * from BoMon where MaBoMon = '" + maBM + "'";
+            string str = "LayBoMonTheoGiaoVien '" + maGV + "'";
             data = Server.LayDuLieuBang(str);
-            if(data.Rows.Count > 0)
+            if (data.Rows.Count > 0)
             {
-                bm = new BoMon(data.Rows[0]["MaBoMon"].ToString(), data.Rows[0]["TenBM"].ToString(), 
-                    data.Rows[0]["MaKhoa"].ToString(), data.Rows[0]["MaChuNhiem"].ToString());
+                bm = new BoMon
+                {                 
+                    TenBoMon = data.Rows[0]["TenBM"].ToString(),
+                    NgayChuyenDen = data.Rows[0]["NgayChuyenDen"].ToString()                 
+                };
                 return bm;
             }
+            return null;
+        }
+
+        public BoMon LayBoMonTheoMa(string maBM)
+        {
+            if(maBM is null)
+            {
+                bm = new BoMon
+                {
+                    MaBoMon = null,
+                    TenBoMon = "Không có bộ môn"       
+                };
+                return bm;
+            }
+            else
+            {
+                data = new DataTable();
+                string str = "select * from BoMon where MaBoMon = '" + maBM + "'";
+                data = Server.LayDuLieuBang(str);
+                if (data.Rows.Count > 0)
+                {
+                    bm = new BoMon
+                    {
+                        MaBoMon = data.Rows[0]["MaBoMon"].ToString(),
+                        TenBoMon = data.Rows[0]["TenBM"].ToString(),
+                        MaKhoa = data.Rows[0]["MaKhoa"].ToString(),
+                        MaChuNhiem = data.Rows[0]["MaChuNhiem"].ToString()
+                    };
+                    return bm;
+                }
+            }         
             return null;
         }
 

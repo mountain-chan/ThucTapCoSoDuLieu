@@ -23,8 +23,7 @@ namespace PhanMenQuanLyGiaoVien.GUI
         private DateTimePicker[] dtpHocVi;
         private DateTimePicker[] dtpCDNhaGiao;
         private DateTimePicker[] dtpCDNCKH;
-        private GiaoVien ttCaNhan;
-        private string  tenBoMon;
+        private GiaoVien ttCaNhan;       
         private int top, stt;
         private int date, month, year;
         public TrangCaNhan(string maGiaoVien, string namBatDau, string namKeThuc)
@@ -70,17 +69,13 @@ namespace PhanMenQuanLyGiaoVien.GUI
             listHe = new HeDAL().LayTatCaHe();
             listHoiDong = new LoaiHoiDongDAL().LayTatCaLoaiHoiDong();
             listHuongDan = new LoaiHuongDanDAL().LayTatCaLoaiHuongDan();
-            ttCaNhan = new GiaoVienDAL().LayGiaoVienTheoMa(maGV);
-
-            var bm = new BoMonDAL().LayBoMonTheoMa(ttCaNhan.MaBoMon);
-            tenBoMon = bm.TenBoMon;
-
-
+            
             dtpNgayDen.MaxDate = DateTime.Today;
             dtpNgaySinh.MaxDate = DateTime.Today.AddYears(-10);
             date = DateTime.Today.Day;
             month = DateTime.Today.Month;
             year = DateTime.Today.Year;
+                      
         }
 
         private void LuaChonNamHoc()
@@ -230,8 +225,9 @@ namespace PhanMenQuanLyGiaoVien.GUI
             {
                 cbbCDNCKH.Items.Add(item);
             }
+            var bm = new BoMonDAL().LayBoMonTheoGiaoVien(maGV);
 
-            cbbBM.Text = tenBoMon;
+            cbbBM.Text = bm.TenBoMon;
             cbbGioiTinh.Text = ttCaNhan.GioiTinh;
             txtMaGV.Text = ttCaNhan.MaGiaoVien;
             txtTenGV.Text = ttCaNhan.TenGiaoVien;
@@ -240,7 +236,7 @@ namespace PhanMenQuanLyGiaoVien.GUI
             txtDiaChi.Text = ttCaNhan.DiaChi;
             txtDienThoai.Text = ttCaNhan.DienThoai;
             dtpNgaySinh.Value = DateTime.Parse(ttCaNhan.NgaySinh);
-            dtpNgayDen.Value = DateTime.Parse(ttCaNhan.NgayChuyenDen);
+            dtpNgayDen.Value = DateTime.Parse(bm.NgayChuyenDen);
 
             taiTTCDNhaGiao();
             taiTTHocVi();
@@ -298,6 +294,8 @@ namespace PhanMenQuanLyGiaoVien.GUI
         private void LyLichKhoaHoc()
         {
             pnLyLichKH.Controls.Clear();
+            ttCaNhan = new GiaoVienDAL().LayGiaoVienTheoMa(maGV);
+            var bm = new BoMonDAL().LayBoMonTheoGiaoVien(maGV);
             var listCDNhaGiao = new ChucDanhNhaGiaoDAL().listChucDanh(maGV);
             var listCDNghienCuu = new ChucDanhNghienCuuDAL().listChucDanh(maGV);
             var listNgoaiNgu = new TrinhDoNgoaiNguDAL().listTrinhDo(maGV);
@@ -319,7 +317,7 @@ namespace PhanMenQuanLyGiaoVien.GUI
             newLable(ThamSo.leftTitle, ThamSo.pdHMax, "I.THÔNG TIN CÁ NHÂN", ThamSo.fTitle, pnLyLichKH);
             newLable(ThamSo.leftTitle, ThamSo.pdHNormal, "1. Họ Và Tên: " + ttCaNhan.TenGiaoVien + "     Giới tính: " + ttCaNhan.GioiTinh + "", ThamSo.fBody, pnLyLichKH);
             newLable(ThamSo.leftTitle, ThamSo.pdHMin, "2. Ngày, tháng, năm sinh: " + ttCaNhan.NgaySinh + "", ThamSo.fBody, pnLyLichKH);
-            newLable(ThamSo.leftTitle, ThamSo.pdHMin, "3. Đơn vị: " + tenBoMon + "", ThamSo.fBody, pnLyLichKH);
+            newLable(ThamSo.leftTitle, ThamSo.pdHMin, "3. Đơn vị: " + bm.TenBoMon + "", ThamSo.fBody, pnLyLichKH);
             newLable(ThamSo.leftTitle, ThamSo.pdHMin, "4. Quê quán: " + ttCaNhan.QueQuan + "", ThamSo.fBody, pnLyLichKH);
             newLable(ThamSo.leftTitle, ThamSo.pdHMin, "5. Địa chỉ liên hệ: " + ttCaNhan.DiaChi + "", ThamSo.fBody, pnLyLichKH);
             newLable(ThamSo.leftTitle, ThamSo.pdHMin, "6. Số điện thoai: " + ttCaNhan.DienThoai + "     Email: " + ttCaNhan.Email + "", ThamSo.fBody, pnLyLichKH);
@@ -532,6 +530,7 @@ namespace PhanMenQuanLyGiaoVien.GUI
                 cbbGioiTinh.Text, dtpNgaySinh.Text, txtQueQuan.Text, txtDiaChi.Text,
                 txtDienThoai.Text, txtEmail.Text))
             {
+                LyLichKhoaHoc();
                 MessageBox.Show("Cập nhật thành công");
             }
             else

@@ -829,11 +829,24 @@ alter proc layGiaoVienTheoMa
 @maGV varchar(10)
 as
 begin
-	select GiaoVien.MaGiaoVien, TenGiaoVien, GioiTinh, NgaySinh, QueQuan, DiaChi, DienThoai, Email, GV_BoMon.MaBoMon, 
-	NgayChuyenDen  from GiaoVien join GV_BoMon on  GiaoVien.MaGiaoVien=GV_BoMon.MaGiaoVien
-	where GiaoVien.MaGiaoVien = @maGV and  dbo.KiemTraNgayLay(GETDATE(), NgayChuyenDen, NgayChuyenDi) = 1
+	select *  from GiaoVien where MaGiaoVien = @maGV
 end
-layGiaoVienTheoMa 'GV01'
+go
+layGiaoVienTheoMa 'GV05'
+
+alter proc LayBoMonTheoGiaoVien
+@maGV varchar(10)
+as begin
+	if(not exists(select MaBoMon from GV_BoMon where MaGiaoVien = @maGV 
+	and dbo.KiemTraNgayLay(GETDATE(), NgayChuyenDen, NgayChuyenDi) = 1))
+		select N'Hiện tại không ở bộ môn nào' as TenBM, '1990-01-01' NgayChuyenDen
+	else
+		select BoMon.MaBoMon, TenBM, NgayChuyenDen, NgayChuyenDi from BoMon join GV_BoMon on BoMon.MaBoMon = GV_BoMon.MaBoMon
+		and dbo.KiemTraNgayLay(GETDATE(), NgayChuyenDen, NgayChuyenDi) = 1 and MaGiaoVien = @maGV
+end
+go
+LayBoMonTheoGiaoVien 'GV01'
+
 
 alter proc layTatCaGiaoVien
 @ngayLay date
@@ -844,7 +857,7 @@ begin
 	where dbo.KiemTraNgayLay(@ngayLay, NgayChuyenDen, NgayChuyenDi) = 1
 end
 
-layTatCaGiaoVien '2019-01-01'
+layTatCaGiaoVien '2012-01-01'
 
 ---hàm kiểm tra ngay ngày lấy có nằm trong khoảng ngày đến ngày đi ko 
 create function KiemTraNgayLay(@NgayLay date, @ngayDen date, @ngayDi date) returns bit

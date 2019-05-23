@@ -14,18 +14,18 @@ namespace PhanMenQuanLyGiaoVien
     {
         private int index;
         private List<Khoa> listKhoa;
+        private IList<GiaoVien> listAllGV;
         public TrangChu()
         {
             InitializeComponent();
-            listKhoa = new KhoaDAL().LayTatKhoa();
+            
 
-
-            DanhMucKhoa();
-            setUp();
+            TaiDuLieu();
+            DanhMucKhoa();           
             dgvGiaoVien.RowHeaderMouseClick += DgvGiaoVien_RowHeaderMouseClick;
         }
 
-        private void setUp()
+        private void TaiDuLieu()
         {
             int inamBD = 2005;
             int inamKT = DateTime.Today.Year;
@@ -34,17 +34,23 @@ namespace PhanMenQuanLyGiaoVien
                 string namHoc = i.ToString() + "-" + (i + 1).ToString();
                 cbNamHoc.Items.Add(namHoc);
             }
+
             dtpNgayXem.MaxDate = DateTime.Today;
+            dtpNgayXem.Value = DateTime.Today;
             dtpThongNhanLuc.MaxDate = DateTime.Today;
+            listKhoa = new KhoaDAL().LayTatKhoa();
+            listAllGV = new GiaoVienDAL().LayTatCaGiaoVien(dtpNgayXem.Value.ToString());
+
+            pnKhoa.BackColor = Color.WhiteSmoke;
+            pnMenu.BackColor = Color.LightGray;
+            pnTitleTKNhanLuc.BackColor = Color.LightGray;
+            pnTitleTongHopTai.BackColor = Color.LightGray;
         }
         
         private void DanhMucKhoa()
         {
             int y = 90;         
-            pnKhoa.BackColor = Color.WhiteSmoke;
-            pnMenu.BackColor = Color.LightGray;
-            pnTitleTKNhanLuc.BackColor = Color.LightGray;
-            pnTitleTongHopTai.BackColor = Color.LightGray;
+            
             Label lbDM = new Label();
             lbDM.Top = 10;
             lbDM.Left = 10;
@@ -58,6 +64,7 @@ namespace PhanMenQuanLyGiaoVien
             lbAll.Left = 10;
             lbAll.Cursor = Cursors.Hand;
             lbAll.Font = ThamSo.fTitle;
+            lbAll.ForeColor = Color.DodgerBlue;
             lbAll.AutoSize = true;
             lbAll.Text = "Tất Cả Giáo Viên";
             lbAll.Parent = pnKhoa;
@@ -70,6 +77,7 @@ namespace PhanMenQuanLyGiaoVien
                 lb.Top = y;
                 lb.Left = 10;
                 lb.Font = ThamSo.fTitle;
+                lb.ForeColor = Color.DodgerBlue;
                 lb.AutoSize = true;
                 lb.Cursor = Cursors.Hand;
                 lb.Text = item.TenKhoa;
@@ -122,8 +130,8 @@ namespace PhanMenQuanLyGiaoVien
 
         private void LbAll_Click(object sender, EventArgs e)
         {
-            var listGV = new GiaoVienDAL().LayTatCaGiaoVien(dtpNgayXem.Text);
-            DoDuLieuDSGV(listGV);
+            listAllGV = new GiaoVienDAL().LayTatCaGiaoVien(dtpNgayXem.Value.ToString());
+            DoDuLieuDSGV(listAllGV);
         }
 
         private void Lb_Click(object sender, EventArgs e)
@@ -148,15 +156,12 @@ namespace PhanMenQuanLyGiaoVien
         }
 
         private void btnTKNhanLuc_Click(object sender, EventArgs e)
-        {
-            //DataTable listData;
+        {          
             var listTT = new List<ThongKeNhanLuc>();
             foreach (var item in listKhoa)
             {
                 var tt = new ThongKeNhanLucDAL().ThongKe(item.MaKhoa, dtpThongNhanLuc.Text);
-                listTT.Add(tt);
-                //var data = new ThongKeNhanLucDAL().ThongKes(item.MaKhoa, dtpThongNhanLuc.Text);
-                //listData.A
+                listTT.Add(tt);              
             }
             BindingSource dts = new BindingSource();
             dts.DataSource = typeof(ThongKeNhanLuc);
@@ -165,10 +170,7 @@ namespace PhanMenQuanLyGiaoVien
             {
                 dts.Add(item);
             }
-            dgvTKNhanLuc.Columns["TenKhoa"].Width = 300;
-            dgvTKNhanLuc.Columns["PhoGiaoSu"].Width = 200;
-            dgvTKNhanLuc.Columns["TienSyKH"].Width = 200;
-
+            
             dgvTKNhanLuc.Columns["TenKhoa"].HeaderText = "Tên Khoa";           
             dgvTKNhanLuc.Columns["TongSo"].HeaderText = "Tổng Số";
             dgvTKNhanLuc.Columns["GiaoSu"].HeaderText = "Giáo Sư";
@@ -199,6 +201,35 @@ namespace PhanMenQuanLyGiaoVien
                     var data = new TongHopTaiCacGiaoVienDAL().tongHop(item.MaBoMon, cbNamHoc.SelectedItem.ToString(), kiHoc);
                     doDuLieuHopTai(data, item.TenBoMon);
                 }
+            }
+
+        }
+
+        private void btnTimKiem_Click(object sender, EventArgs e)
+        {
+            if(txtTimKiem.Text == "")
+            {
+                MessageBox.Show("Bạn chưa nhập từ cần tìm kiếm");
+            }
+            else
+            {
+                IList<GiaoVien> listTK = new List<GiaoVien>();
+                foreach(var item in listAllGV)
+                {
+                    if (item.TenGiaoVien.Contains(txtTimKiem.Text))
+                        listTK.Add(item);
+                }
+                foreach (var item in listAllGV)
+                {
+                    if (item.MaGiaoVien.Contains(txtTimKiem.Text))
+                        listTK.Add(item);
+                }
+                foreach (var item in listAllGV)
+                {
+                    if (item.MaBoMon.Contains(txtTimKiem.Text))
+                        listTK.Add(item);
+                }
+                DoDuLieuDSGV(listTK);
             }
 
         }

@@ -151,10 +151,10 @@ namespace PhanMenQuanLyGiaoVien.DAL
             return listGV;
         }
 
-        public GiaoVien LayGiaoVienTheoMa(string maBM)
+        public GiaoVien LayGiaoVienTheoMa(string maGV)
         {
             data = new DataTable();
-            string str = "layGiaoVienTheoMa '" + maBM + "'";
+            string str = "layGiaoVienTheoMa '" + maGV + "'";
             data = Server.LayDuLieuBang(str);
             if (data.Rows.Count > 0)
             {
@@ -170,9 +170,7 @@ namespace PhanMenQuanLyGiaoVien.DAL
                     QueQuan = data.Rows[0]["QueQuan"].ToString(),
                     DiaChi = data.Rows[0]["DiaChi"].ToString(),
                     DienThoai = data.Rows[0]["DienThoai"].ToString(),
-                    Email = data.Rows[0]["Email"].ToString(),
-                    MaBoMon = data.Rows[0]["MaBoMon"].ToString(),
-                    NgayChuyenDen = data.Rows[0]["NgayChuyenDen"].ToString()
+                    Email = data.Rows[0]["Email"].ToString()                    
                 };
                 return tmp;
             }

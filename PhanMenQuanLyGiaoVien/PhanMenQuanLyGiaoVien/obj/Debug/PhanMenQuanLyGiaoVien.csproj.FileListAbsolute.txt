@@ -9,3 +9,14 @@ E:\TAI LIEU MON HOC\Visual C#\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\De
 E:\TAI LIEU MON HOC\Visual C#\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\Debug\PhanMenQuanLyGiaoVien.pdb
 E:\TAI LIEU MON HOC\Visual C#\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\Debug\PhanMenQuanLyGiaoVien.GUI.TrangCaNhan.resources
 E:\TAI LIEU MON HOC\Visual C#\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\Debug\PhanMenQuanLyGiaoVien.csprojAssemblyReference.cache
+E:\TAI LIEU MON HOC\GITHUB\ThucTapCoSoDuLieu\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\bin\Debug\PhanMenQuanLyGiaoVien.exe.config
+E:\TAI LIEU MON HOC\GITHUB\ThucTapCoSoDuLieu\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\bin\Debug\PhanMenQuanLyGiaoVien.exe
+E:\TAI LIEU MON HOC\GITHUB\ThucTapCoSoDuLieu\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\bin\Debug\PhanMenQuanLyGiaoVien.pdb
+E:\TAI LIEU MON HOC\GITHUB\ThucTapCoSoDuLieu\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\Debug\PhanMenQuanLyGiaoVien.GUI.TrangCaNhan.resources
+E:\TAI LIEU MON HOC\GITHUB\ThucTapCoSoDuLieu\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\Debug\PhanMenQuanLyGiaoVien.Properties.Resources.resources
+E:\TAI LIEU MON HOC\GITHUB\ThucTapCoSoDuLieu\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\Debug\PhanMenQuanLyGiaoVien.TrangChu.resources
+E:\TAI LIEU MON HOC\GITHUB\ThucTapCoSoDuLieu\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\Debug\PhanMenQuanLyGiaoVien.csproj.GenerateResource.cache
+E:\TAI LIEU MON HOC\GITHUB\ThucTapCoSoDuLieu\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\Debug\PhanMenQuanLyGiaoVien.csproj.CoreCompileInputs.cache
+E:\TAI LIEU MON HOC\GITHUB\ThucTapCoSoDuLieu\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\Debug\PhanMenQuanLyGiaoVien.exe
+E:\TAI LIEU MON HOC\GITHUB\ThucTapCoSoDuLieu\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\Debug\PhanMenQuanLyGiaoVien.pdb
+E:\TAI LIEU MON HOC\GITHUB\ThucTapCoSoDuLieu\PhanMenQuanLyGiaoVien\PhanMenQuanLyGiaoVien\obj\Debug\PhanMenQuanLyGiaoVien.csprojAssemblyReference.cache

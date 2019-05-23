@@ -147,6 +147,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.label1.Location = new System.Drawing.Point(27, 8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 13);
@@ -155,18 +156,19 @@
             // 
             // btnTimKiem
             // 
-            this.btnTimKiem.Location = new System.Drawing.Point(610, 3);
+            this.btnTimKiem.Location = new System.Drawing.Point(917, 3);
             this.btnTimKiem.Name = "btnTimKiem";
             this.btnTimKiem.Size = new System.Drawing.Size(40, 20);
             this.btnTimKiem.TabIndex = 1;
             this.btnTimKiem.Text = "Tìm";
             this.btnTimKiem.UseVisualStyleBackColor = true;
+            this.btnTimKiem.Click += new System.EventHandler(this.btnTimKiem_Click);
             // 
             // txtTimKiem
             // 
             this.txtTimKiem.Location = new System.Drawing.Point(504, 3);
             this.txtTimKiem.Name = "txtTimKiem";
-            this.txtTimKiem.Size = new System.Drawing.Size(100, 20);
+            this.txtTimKiem.Size = new System.Drawing.Size(409, 20);
             this.txtTimKiem.TabIndex = 0;
             // 
             // tabTongHopTai
@@ -320,14 +322,14 @@
             // 
             this.dtpThongNhanLuc.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dtpThongNhanLuc.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpThongNhanLuc.Location = new System.Drawing.Point(451, 11);
+            this.dtpThongNhanLuc.Location = new System.Drawing.Point(563, 11);
             this.dtpThongNhanLuc.Name = "dtpThongNhanLuc";
             this.dtpThongNhanLuc.Size = new System.Drawing.Size(136, 26);
             this.dtpThongNhanLuc.TabIndex = 5;
             // 
             // btnTKNhanLuc
             // 
-            this.btnTKNhanLuc.Location = new System.Drawing.Point(606, 12);
+            this.btnTKNhanLuc.Location = new System.Drawing.Point(705, 13);
             this.btnTKNhanLuc.Name = "btnTKNhanLuc";
             this.btnTKNhanLuc.Size = new System.Drawing.Size(75, 23);
             this.btnTKNhanLuc.TabIndex = 4;
@@ -339,7 +341,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(57, 12);
+            this.label2.Location = new System.Drawing.Point(170, 12);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(387, 24);
             this.label2.TabIndex = 2;

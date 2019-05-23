@@ -18,8 +18,12 @@ namespace PhanMenQuanLyGiaoVien.DAL
             data = Server.LayDuLieuBang(str);
             foreach (DataRow item in data.Rows)
             {
-                bm = new Khoa(item["MaKhoa"].ToString(), item["TenKhoa"].ToString(),
-                    item["MaChuNhiem"].ToString());
+                bm = new Khoa
+                {
+                    MaKhoa = item["MaKhoa"].ToString(),
+                    TenKhoa = item["TenKhoa"].ToString(),
+                    MaChuNhiem = item["MaChuNhiem"].ToString()
+                };
 
                 listKhoa.Add(bm);
             }
@@ -33,8 +37,12 @@ namespace PhanMenQuanLyGiaoVien.DAL
             data = Server.LayDuLieuBang(str);
             if (data.Rows.Count > 0)
             {
-                bm = new Khoa(data.Rows[0]["MaKhoa"].ToString(), data.Rows[0]["TenKhoa"].ToString(),
-                    data.Rows[0]["MaChuNhiem"].ToString());
+                bm = new Khoa
+                {
+                    MaKhoa = data.Rows[0]["MaKhoa"].ToString(),
+                    TenKhoa = data.Rows[0]["TenKhoa"].ToString(),
+                    MaChuNhiem = data.Rows[0]["MaChuNhiem"].ToString()
+                };
                 return bm;
             }
             return null;
