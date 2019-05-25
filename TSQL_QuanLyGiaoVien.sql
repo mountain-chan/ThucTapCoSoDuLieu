@@ -986,14 +986,46 @@ alter function TongHopTaiCacGiaoVien(@maBoMon varchar(10), @namHoc varchar(10), 
 as
 begin
 	insert into @table select TenGiaoVien, dbo.taiThucDaoTao(GiaoVien.MaGiaoVien, @namHoc, @kiHoc),
-	dbo.taiDaoTaoYeuCau(GiaoVien.MaGiaoVien, @namHoc, @kiHoc), dbo.phanTramTaiDT(GiaoVien.MaGiaoVien, @namHoc, @kiHoc),
+	dbo.taiDaoTaoYeuCau(GiaoVien.MaGiaoVien, @namHoc, @kiHoc),
+	CONVERT(varchar(10), dbo.phanTramTaiDT(GiaoVien.MaGiaoVien, @namHoc, @kiHoc)) + ' %',
 	dbo.taiNCKH(GiaoVien.MaGiaoVien, @namHoc, @kiHoc), dbo.taiNghienCuuYeuCau(GiaoVien.MaGiaoVien, @namHoc, @kiHoc), 
-	dbo.phanTramTaiNCKH(GiaoVien.MaGiaoVien, @namHoc, @kiHoc),  dbo.tongThucTai(GiaoVien.MaGiaoVien, @namHoc, @kiHoc),
-	dbo.tongTaiYeuCau(GiaoVien.MaGiaoVien, @namHoc, @kiHoc), dbo.phanTramTongTai(GiaoVien.MaGiaoVien, @namHoc, @kiHoc)
+	CONVERT(varchar(10), dbo.phanTramTaiNCKH(GiaoVien.MaGiaoVien, @namHoc, @kiHoc)) + ' %' ,
+	dbo.tongThucTai(GiaoVien.MaGiaoVien, @namHoc, @kiHoc),
+	dbo.tongTaiYeuCau(GiaoVien.MaGiaoVien, @namHoc, @kiHoc), CONVERT(varchar(10),
+	dbo.phanTramTongTai(GiaoVien.MaGiaoVien, @namHoc, @kiHoc)) + ' %' 
 	from GiaoVien join GV_BoMon on GiaoVien.MaGiaoVien=GV_BoMon.MaGiaoVien 
 	join BoMon on GV_BoMon.MaBoMon = BoMon.MaBoMon
 	where BoMon.MaBoMon = @maBoMon
 	and dbo.CheckTime(@namHoc, @kiHoc, NgayChuyenDen, NgayChuyenDi) = 1
+
+	declare @tongthuctaidaotao float, @tongtaidtyc float, @ptTaiDT DEC(10,1),
+	@tongThucTaiNCK float, @tongTaiNCKHyc float, @ptTaiNCKH DEC(10,1),
+	@tongThucTai float, @tongtaiYc float, @ptTongtai DEC(10,1)
+
+	select @tongthuctaidaotao = Sum(dbo.taiThucDaoTao(GiaoVien.MaGiaoVien, @namHoc, @kiHoc)),
+	@tongtaidtyc = sum(dbo.taiDaoTaoYeuCau(GiaoVien.MaGiaoVien, @namHoc, @kiHoc)), 
+	@tongThucTaiNCK = sum(dbo.taiNCKH(GiaoVien.MaGiaoVien, @namHoc, @kiHoc)), 
+	@tongTaiNCKHyc = sum(dbo.taiNghienCuuYeuCau(GiaoVien.MaGiaoVien, @namHoc, @kiHoc)), 	
+	@tongThucTai= sum(dbo.tongThucTai(GiaoVien.MaGiaoVien, @namHoc, @kiHoc)),
+	@tongtaiYc = sum(dbo.tongTaiYeuCau(GiaoVien.MaGiaoVien, @namHoc, @kiHoc))
+	from GiaoVien join GV_BoMon on GiaoVien.MaGiaoVien=GV_BoMon.MaGiaoVien 
+	join BoMon on GV_BoMon.MaBoMon = BoMon.MaBoMon
+	where BoMon.MaBoMon = @maBoMon
+	and dbo.CheckTime(@namHoc, @kiHoc, NgayChuyenDen, NgayChuyenDi) = 1
+
+	if(@tongtaidtyc = 0) set @ptTaiDT = @tongthuctaidaotao*100
+	else set @ptTaiDT = @tongthuctaidaotao/@tongtaidtyc*100
+
+	if(@tongTaiNCKHyc = 0) set @ptTaiNCKH = @tongThucTaiNCK*100
+	else set @ptTaiNCKH = @tongThucTaiNCK/@tongTaiNCKHyc*100
+
+	if(@tongtaiYc = 0) set @ptTongtai = @tongThucTai*100
+	else set @ptTongtai = @tongThucTai/@tongtaiYc*100
+
+
+	insert into @table values(N'Tổng', @tongthuctaidaotao, @tongtaidtyc, CONVERT(varchar(10), @ptTaiDT) + ' %',
+	@tongThucTaiNCK, @tongTaiNCKHyc, CONVERT(varchar(10), @ptTaiNCKH) + ' %', @tongThucTai, @tongtaiYc, 
+	CONVERT(varchar(10), @ptTongtai) + ' %')
 
 	return 
 end
@@ -1004,51 +1036,45 @@ select * from TongHopTaiCacGiaoVien('BM02', '2018-2019', '1')
 select * from TongHop('GV04', '2018-2019', '2')
 
 
-alter function phanTramTongTai(@maGV varchar(10), @namHoc varchar(10), @kiHoc nvarchar(10)) returns varchar(20)
+alter function phanTramTongTai(@maGV varchar(10), @namHoc varchar(10), @kiHoc nvarchar(10)) returns float
 as
 begin 
 	declare @pt DEC(10,1), @yc DEC(10,1)
-	declare @phantram varchar(20)
-	if(dbo.tongTaiYeuCau(@maGV, @namHoc, @kiHoc) = 0) set @yc = 1
-	else set @yc = dbo.tongTaiYeuCau(@maGV, @namHoc, @kiHoc)
+	set @yc = dbo.tongTaiYeuCau(@maGV, @namHoc, @kiHoc)
+	if(@yc = 0) set @yc = 1
 
 	set @pt = dbo.tongThucTai(@maGV, @namHoc, @kiHoc)/@yc*100
 	
-	set @phantram = CONVERT(varchar(10), @pt) + ' %'
 
-	return @phantram
+	return @pt
 end
 go
 
 
-alter function phanTramTaiNCKH(@maGV varchar(10), @namHoc varchar(10), @kiHoc nvarchar(10)) returns varchar(20)
+alter function phanTramTaiNCKH(@maGV varchar(10), @namHoc varchar(10), @kiHoc nvarchar(10)) returns float
 as
 begin 
-	declare @pt DEC(10,1), @yc DEC(10,1)
-	declare @phantram varchar(20)
-	if(dbo.taiNghienCuuYeuCau(@maGV, @namHoc, @kiHoc) = 0) set @yc = 1
-	else set @yc = dbo.taiNghienCuuYeuCau(@maGV, @namHoc, @kiHoc)
+	declare @pt DEC(10,1), @yc DEC(10,1)	
+	set @yc = dbo.taiNghienCuuYeuCau(@maGV, @namHoc, @kiHoc)
+	if(@yc = 0) set @yc = 1
 
 	set @pt = dbo.taiNCKH(@maGV, @namHoc, @kiHoc)/@yc*100
 	
-	set @phantram = CONVERT(varchar(10), @pt) + ' %'
-	return @phantram
+	return @pt
 end
 
 
 go
-alter function phanTramTaiDT(@maGV varchar(10), @namHoc varchar(10), @kiHoc nvarchar(10)) returns varchar(20)
+alter function phanTramTaiDT(@maGV varchar(10), @namHoc varchar(10), @kiHoc nvarchar(10)) returns float
 as
 begin 
 	declare @pt DEC(10,1), @yc DEC(10,1)
-	declare @phantram varchar(20)
-	if(dbo.taiDaoTaoYeuCau(@maGV, @namHoc, @kiHoc) = 0) set @yc = 1
-	else set @yc = dbo.taiDaoTaoYeuCau(@maGV, @namHoc, @kiHoc)
+	set @yc = dbo.taiDaoTaoYeuCau(@maGV, @namHoc, @kiHoc)
+	if(@yc = 0) set @yc = 1
 
 	set @pt = dbo.taiThucDaoTao(@maGV, @namHoc, @kiHoc)/@yc*100
-	
-	set @phantram = CONVERT(varchar(10), @pt) + ' %'
-	return @phantram
+		
+	return @pt
 end
 
 go

@@ -510,6 +510,8 @@ namespace PhanMenQuanLyGiaoVien.GUI
                 pnGiangDay.Controls.Clear();
                 pnHoiDong.Controls.Clear();
                 pnHuongDan.Controls.Clear();
+                pnNCKH.Controls.Clear();
+                pnKhaoThi.Controls.Clear();
                 CapNhatThongTinGiangDay(maGV, namHoc, kiHoc);
                 CapNhatThongTinHuongDan(maGV, namHoc, kiHoc);
                 CapNhatThongTinKhaoThi(maGV, namHoc, kiHoc);
